@@ -196,4 +196,44 @@ VkResult VulkanDevice::createLogicalDevice(VkPhysicalDeviceFeatures enabledFeatu
 	return result;
 }
 
+VkResult VulkanDevice::createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size, VkBuffer * buffer, VkDeviceMemory * memory, void * data)
+{
+	VkBufferCreateInfo bufferCreateInfo = Vulkan::Inits::bufferCreateInfo();
+	bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE; //Research
+	vkCreateBuffer(logicalDevice, &bufferCreateInfo, nullptr, buffer);
+
+	VkMemoryRequirements memReqs;
+	VkMemoryAllocateInfo memAlloc = Vulkan::Inits::memoryAllocateInfo();
+	vkGetBufferMemoryRequirements(logicalDevice, *buffer, &memReqs);
+	memAlloc.allocationSize = memReqs.size;
+
+	memAlloc.memoryTypeIndex = getMemoryType(memReqs.memoryTypeBits, memoryPropertyFlags);
+	vkAllocateMemory(logicalDevice, &memAlloc, nullptr, memory);
+
+	if (data != nullptr)
+	{
+		void *mapped;
+		vkMapMemory(logicalDevice, *memory, 0, size, 0, &mapped);
+		memcpy(mapped, data, size);
+
+		if ((memoryPropertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0)
+		{
+			VkMappedMemoryRange mappedRange = Vulkan::Inits::mappedMemoryRange();
+			mappedRange.memory = *memory;
+			mappedRange.offset = 0;
+			mappedRange.size = size;
+			vkFlushMappedMemoryRanges(logicalDevice, 1, &mappedRange);
+		}
+	}
+	vkBindBufferMemory(logicalDevice, *buffer, *memory, 0);
+	return VK_SUCCESS;
+}
+
+VkResult VulkanDevice::createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VulkanBuffer * buffer, VkDeviceSize size, void * data)
+{
+	buffer->device = logicalDevice;
+
+	VkBufferCreateInfo bufferCreateInfo = Vulkan::Inits::bufferCreateInfo(usageFlags, size);
+}
+
 

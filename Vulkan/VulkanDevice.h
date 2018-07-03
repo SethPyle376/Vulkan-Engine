@@ -4,6 +4,9 @@
 
 #include <vulkan\vulkan.h>
 
+#include "VulkanInits.h"
+#include "VulkanBuffer.h"
+
 class VulkanDevice
 {
 private:
@@ -40,7 +43,8 @@ public:
 	uint32_t getQueueFamilyIndex(VkQueueFlagBits queueFlags);
 
 	VkResult createLogicalDevice(VkPhysicalDeviceFeatures enabledFeatures, std::vector<const char*> enabledExtensions, bool useSwapChain = true, VkQueueFlags requestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT);
-
+	VkResult createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size, VkBuffer *buffer, VkDeviceMemory *memory, void *data = nullptr);
+	VkResult createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VulkanBuffer *buffer, VkDeviceSize size, void *data = nullptr);
 
 
 };
