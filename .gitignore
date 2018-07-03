@@ -13,6 +13,7 @@
 *.ipch
 *.pdb
 *.idb
+*.opendb
 
 # Compiled Dynamic libraries
 *.so

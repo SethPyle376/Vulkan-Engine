@@ -20,12 +20,14 @@ private:
 
 	VkCommandPool commandPool = VK_NULL_HANDLE;
 
+	bool enableDebugMarkers = false;
+
 	struct
 	{
 		uint32_t graphics;
 		uint32_t compute;
 		uint32_t transfer;
-	} queueFarmilyIndices;
+	} queueFamilyIndices;
 
 	operator VkDevice() { return logicalDevice; }
 
@@ -34,7 +36,10 @@ public:
 
 	uint32_t getMemoryType(uint32_t typeBits, VkMemoryPropertyFlags properties, VkBool32 *memTypeFound = nullptr);
 
+	//Might move this to tools
 	uint32_t getQueueFamilyIndex(VkQueueFlagBits queueFlags);
+
+	VkResult createLogicalDevice(VkPhysicalDeviceFeatures enabledFeatures, std::vector<const char*> enabledExtensions, bool useSwapChain = true, VkQueueFlags requestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT);
 
 
 
