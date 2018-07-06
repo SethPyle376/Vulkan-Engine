@@ -236,4 +236,90 @@ VkResult VulkanDevice::createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPrope
 	VkBufferCreateInfo bufferCreateInfo = Vulkan::Inits::bufferCreateInfo(usageFlags, size);
 }
 
+void VulkanDevice::copyBuffer(VulkanBuffer * src, VulkanBuffer * dst, VkQueue queue, VkBufferCopy * copyRegion = nullptr)
+{
+	assert(dst->size <= src->size);
+	assert(src->buffer);
+
+	//VkCommandBuffer copyCmd = createCommandBuffer(VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
+	VkBufferCopy bufferCopy{};
+
+	if (copyRegion == nullptr)
+	{
+		bufferCopy.size = src->size;
+	}
+	else
+	{
+		bufferCopy = *copyRegion;
+	}
+
+	//vkCmdCopyBuffer(copyCmd, src->buffer, dst->buffer, 1, &bufferCopy);
+	//flushCommandBuffer(copyCmd, queue);
+}
+
+VkCommandPool VulkanDevice::createCommandPool(uint32_t queueFamilyIndex, VkCommandPoolCreateFlags createFlags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT)
+{
+	VkCommandPoolCreateInfo cmdPoolInfo = {};
+	cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	cmdPoolInfo.queueFamilyIndex = queueFamilyIndex;
+	cmdPoolInfo.flags = createFlags;
+	VkCommandPool cmdPool;
+	//TODO: Check result of command pool creation.
+	vkCreateCommandPool(logicalDevice, &cmdPoolInfo, nullptr, &cmdPool);
+	return cmdPool;
+}
+
+VkCommandBuffer VulkanDevice::createCommandBuffer(VkCommandBufferLevel level, bool begin)
+{
+	VkCommandBufferAllocateInfo cmdBufAllocateInfo = Vulkan::Inits::commandBufferAllocateInfo(commandPool, level, 1);
+
+	VkCommandBuffer cmdBuffer;
+
+	//TODO: CHECK RESULT
+	vkAllocateCommandBuffers(logicalDevice, &cmdBufAllocateInfo, &cmdBuffer);
+
+	if (begin)
+	{
+		VkCommandBufferBeginInfo cmdBufInfo = Vulkan::Inits::commandBufferBeginInfo();
+	}
+
+	return cmdBuffer;
+}
+
+void VulkanDevice::flushCommandBuffer(VkCommandBuffer commandBuffer, VkQueue queue, bool free = true)
+{
+	if (commandBuffer == VK_NULL_HANDLE)
+	{
+		std::cout << "NO COMMAND BUFFER FOUND TO FLUSH" << std::endl;
+		return;
+	}
+
+	vkEndCommandBuffer(commandBuffer);
+
+	VkSubmitInfo submitInfo = Vulkan::Inits::submitInfo();
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &commandBuffer;
+
+	VkFenceCreateInfo fenceInfo = Vulkan::Inits::fenceCreateInfo();
+	VkFence fence;
+	vkCreateFence(logicalDevice, &fenceInfo, nullptr, &fence);
+
+	vkQueueSubmit(queue, 1, &submitInfo, fence);
+	vkWaitForFences(logicalDevice, 1, &fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
+
+	vkDestroyFence(logicalDevice, fence, nullptr);
+
+	if (free)
+	{
+		vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
+	}
+}
+
+bool VulkanDevice::extensionSupported(std::string extension)
+{
+	return (std::find(supportedExtensions.begin(), supportedExtensions.end(), extension) != supportedExtensions.end());
+}
+
+
+
 
