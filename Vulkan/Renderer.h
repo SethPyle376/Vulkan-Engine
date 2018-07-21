@@ -14,6 +14,8 @@
 #include <set>
 #include <algorithm>
 
+#include "Renderer\Vulkan\VulkanInits.h"
+
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
@@ -135,9 +137,14 @@ private:
 
 	void initWindow()
 	{
+		//Initialized glfw windowing libary
 		glfwInit();
+		//Tell glfw not to initialize an openGL context by default
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		//Disable window resizing until we can support it in the renderer
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		//Create the actual window
+		//Use hardcoded size constants to keep references consistent
 		window = glfwCreateWindow(WIDTH, HEIGHT, "VULKAN", nullptr, nullptr);
 	}
 
@@ -161,6 +168,7 @@ private:
 
 	void mainLoop()
 	{
+		//Keep loop running until kill signal is sent to glfw
 		while (!glfwWindowShouldClose(window))
 		{
 			glfwPollEvents();
@@ -923,6 +931,12 @@ private:
 		glfwTerminate();
 	}
 
+
+	//! Creates Vulkan Instance
+	/*!
+		Creates an instance of Vulkan.
+		If validation layers are enabled they will be specified during instance creation.
+	*/
 	void createInstance()
 	{
 		if (enableValidationLayers && !checkValidationLayerSupport())
@@ -930,19 +944,10 @@ private:
 			throw std::runtime_error("VALIDATION REQUESTED BUT NOT AVAILABLE");
 		}
 
+		VkApplicationInfo appInfo = getApplicationInfo("Peacemaker", "Peacemaker");
 
-		VkApplicationInfo appInfo = {};
-		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = "Hello World";
-		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.pEngineName = "No Engine";
-		appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.apiVersion = VK_API_VERSION_1_0;
-
-		VkInstanceCreateInfo createInfo = {};
-		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-		createInfo.pApplicationInfo = &appInfo;
-
+		VkInstanceCreateInfo createInfo = getInstanceCreateInfo(&appInfo);
+		//TODO: Consolidate instances into getInstanceCreateInfo eventually.
 		auto extensions = getRequiredExtensions();
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
