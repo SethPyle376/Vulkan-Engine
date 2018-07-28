@@ -9,10 +9,8 @@ private:
 	
 
 public:
-
 	VulkanDevice * device;
 	VulkanSwapchain * swapChain;
-
 	VkInstance *instance;
 
 	VulkanRenderer(VkInstance *instance, GLFWwindow *window);

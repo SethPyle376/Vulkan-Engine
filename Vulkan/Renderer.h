@@ -156,17 +156,15 @@ private:
 	{
 		createInstance();
 		setupDebugCallback();
-		//createSurface();
+
 		renderer = new VulkanRenderer(&instance, window);
 
-		physicalDevice = renderer->device->physicalDevice;
-		device = renderer->device->device;
-		surface = renderer->swapChain->surface;
-		graphicsQueue = renderer->device->graphicsQueue;
-		presentQueue = renderer->device->presentQueue;
+		physicalDevice = *(renderer->device->getPhysicalDevice());
+		device = *(renderer->device->getLogicalDevice());
+		surface = *(renderer->swapChain->getSurface());
+		graphicsQueue = renderer->device->getGraphicsQueue();
+		presentQueue = renderer->device->getPresentQueue();
 
-		/*pickPhysicalDevice();
-		createLogicalDevice();*/
 
 		createSwapChain();
 		createImageViews();

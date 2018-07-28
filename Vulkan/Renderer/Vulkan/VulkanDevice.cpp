@@ -1,13 +1,49 @@
 #include "VulkanDevice.h"
 
-VulkanDevice::VulkanDevice(VkInstance *instance, VkSurfaceKHR *surface)
+void VulkanDevice::setSurface(VkSurfaceKHR * surface)
+{
+	this->surface = surface;
+}
+
+VkInstance * VulkanDevice::getInstance()
+{
+	return instance;
+}
+
+VkPhysicalDevice * VulkanDevice::getPhysicalDevice()
+{
+	return &physicalDevice;
+}
+
+VkDevice * VulkanDevice::getLogicalDevice()
+{
+	return &device;
+}
+
+VkQueue VulkanDevice::getGraphicsQueue()
+{
+	return graphicsQueue;
+}
+
+VkQueue VulkanDevice::getPresentQueue()
+{
+	return presentQueue;
+}
+
+VkSurfaceKHR * VulkanDevice::getSurface()
+{
+	return surface;
+}
+
+VulkanDevice::VulkanDevice(VkInstance *instance, GLFWwindow *window)
 {
 	std::cout << "CREATING VULKAN DEVICE" << std::endl;
 	this->instance = instance;
-	this->surface = surface;
+	this->window = window;
+
+	std::cout << "PICKING PHYSICAL DEVICE." << std::endl;
 	pickPhysicalDevice();
-	createLogicalDevice();
-	std::cout << "DEVICE CREATED" << std::endl;
+
 }
 
 VulkanDevice::~VulkanDevice()
@@ -25,12 +61,11 @@ bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)
 	VkPhysicalDeviceFeatures deviceFeatures;
 	vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-	QueueFamilyIndices indices = findQueueFamilies(device);
+	//QueueFamilyIndices indices = findQueueFamilies(device);
 
-	if (indices.isComplete())
-		return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader;
-	else
-		return false;
+	
+	return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader;
+
 }
 
 void VulkanDevice::pickPhysicalDevice()
@@ -134,3 +169,5 @@ void VulkanDevice::createLogicalDevice()
 	vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
 	vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
 }
+
+

@@ -5,18 +5,28 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <vector>
+
+#include "VulkanDevice.h"
+
+struct SwapChainSupportDetails {
+	VkSurfaceCapabilitiesKHR capabilities;
+	std::vector<VkSurfaceFormatKHR> formats;
+	std::vector<VkPresentModeKHR> presentModes;
+};
 
 class VulkanSwapchain
 {
 private:
-	VkInstance * instance;
-	
+	VulkanDevice * vulkanDevice;
+	VkSurfaceKHR surface;
 
-	GLFWwindow *window;
+	SwapChainSupportDetails querySwapChainSupport();
 
 	void initSurface();
 
 public:
-	VulkanSwapchain(VkInstance *instance, GLFWwindow *window);
-	VkSurfaceKHR surface;
+	VulkanSwapchain(VulkanDevice *vulkanDevice);
+	
+	VkSurfaceKHR * getSurface();
 };
