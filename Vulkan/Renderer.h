@@ -16,11 +16,13 @@
 
 #include "Renderer\Vulkan\VulkanInits.h"
 
+#include "Renderer\Vulkan\VulkanRenderer.h"
+
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
 const std::vector<const char*> validationLayers = { "VK_LAYER_LUNARG_standard_validation" };
-const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+//const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -83,6 +85,8 @@ public:
 
 private:
 	GLFWwindow * window;
+
+	VulkanRenderer *renderer;
 
 	VkInstance instance;
 
@@ -152,9 +156,18 @@ private:
 	{
 		createInstance();
 		setupDebugCallback();
-		createSurface();
-		pickPhysicalDevice();
-		createLogicalDevice();
+		//createSurface();
+		renderer = new VulkanRenderer(&instance, window);
+
+		physicalDevice = renderer->device->physicalDevice;
+		device = renderer->device->device;
+		surface = renderer->swapChain->surface;
+		graphicsQueue = renderer->device->graphicsQueue;
+		presentQueue = renderer->device->presentQueue;
+
+		/*pickPhysicalDevice();
+		createLogicalDevice();*/
+
 		createSwapChain();
 		createImageViews();
 		createRenderPass();

@@ -12,5 +12,6 @@ int main()
 		system("PAUSE");
 		return EXIT_FAILURE;
 	}
+	system("PAUSE");
 	return EXIT_SUCCESS;
 }
