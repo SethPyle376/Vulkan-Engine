@@ -61,9 +61,9 @@ bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)
 	VkPhysicalDeviceFeatures deviceFeatures;
 	vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
+	//TODO: Figure this out
 	//QueueFamilyIndices indices = findQueueFamilies(device);
 
-	
 	return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader;
 
 }
@@ -98,8 +98,6 @@ void VulkanDevice::pickPhysicalDevice()
 
 QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice physicalDevice)
 {
-	QueueFamilyIndices indices;
-
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
 

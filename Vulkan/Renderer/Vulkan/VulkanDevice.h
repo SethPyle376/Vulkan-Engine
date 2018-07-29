@@ -30,7 +30,7 @@ private:
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
-	
+	QueueFamilyIndices indices;
 
 	GLFWwindow *window;
 

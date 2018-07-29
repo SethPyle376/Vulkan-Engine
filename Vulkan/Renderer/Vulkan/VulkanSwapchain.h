@@ -6,8 +6,12 @@
 #include <stdexcept>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include "VulkanDevice.h"
+
+#define WIDTH 1280
+#define HEIGHT 720
 
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
@@ -18,15 +22,29 @@ struct SwapChainSupportDetails {
 class VulkanSwapchain
 {
 private:
+	friend class VulkanRenderer;
 	VulkanDevice * vulkanDevice;
 	VkSurfaceKHR surface;
+
+
 
 	SwapChainSupportDetails querySwapChainSupport();
 
 	void initSurface();
+	bool swapChainAdequate();
+	void createSwapchain();
+
+	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
+	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
 public:
 	VulkanSwapchain(VulkanDevice *vulkanDevice);
 	
 	VkSurfaceKHR * getSurface();
+
+	VkSwapchainKHR swapChain;
+	std::vector<VkImage> swapChainImages;
+	VkSurfaceFormatKHR surfaceFormat;
+	VkExtent2D extent;
 };

@@ -18,8 +18,6 @@
 
 #include "Renderer\Vulkan\VulkanRenderer.h"
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
 
 const std::vector<const char*> validationLayers = { "VK_LAYER_LUNARG_standard_validation" };
 //const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
@@ -166,7 +164,14 @@ private:
 		presentQueue = renderer->device->getPresentQueue();
 
 
-		createSwapChain();
+		//createSwapChain();
+
+		swapChain = renderer->swapChain->swapChain;
+		swapChainImages = renderer->swapChain->swapChainImages;
+		swapChainImageFormat = renderer->swapChain->surfaceFormat.format;
+		swapChainExtent = renderer->swapChain->extent;
+
+
 		createImageViews();
 		createRenderPass();
 		createGraphicsPipeline();
@@ -601,6 +606,8 @@ private:
 		QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 		uint32_t queueFamilyIndices[] = { (uint32_t)indices.graphicsFamily, (uint32_t)indices.presentFamily };
 
+		std::cout << queueFamilyIndices[0] << ":" << queueFamilyIndices[1] << std::endl;
+
 		if (indices.graphicsFamily != indices.presentFamily)
 		{
 			createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
@@ -622,6 +629,8 @@ private:
 		{
 			throw std::runtime_error("ERROR: FAILED TO CREATE SWAP CHAIN.");
 		}
+
+
 
 		vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
 		swapChainImages.resize(imageCount);

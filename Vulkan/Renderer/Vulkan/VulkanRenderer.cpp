@@ -6,4 +6,5 @@ VulkanRenderer::VulkanRenderer(VkInstance* instance, GLFWwindow *window)
 	swapChain = new VulkanSwapchain(device);
 	device->setSurface(swapChain->getSurface());
 	device->createLogicalDevice();
+	swapChain->createSwapchain();
 }
