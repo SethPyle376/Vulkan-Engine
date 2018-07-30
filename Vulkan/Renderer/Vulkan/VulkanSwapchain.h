@@ -33,6 +33,7 @@ private:
 	void initSurface();
 	bool swapChainAdequate();
 	void createSwapchain();
+	void createImageViews();
 
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
@@ -40,11 +41,13 @@ private:
 
 public:
 	VulkanSwapchain(VulkanDevice *vulkanDevice);
+	~VulkanSwapchain();
 	
 	VkSurfaceKHR * getSurface();
 
 	VkSwapchainKHR swapChain;
 	std::vector<VkImage> swapChainImages;
+	std::vector<VkImageView> swapChainImageViews;
 	VkSurfaceFormatKHR surfaceFormat;
 	VkExtent2D extent;
 };

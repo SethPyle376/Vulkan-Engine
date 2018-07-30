@@ -163,16 +163,13 @@ private:
 		graphicsQueue = renderer->device->getGraphicsQueue();
 		presentQueue = renderer->device->getPresentQueue();
 
-
-		//createSwapChain();
-
 		swapChain = renderer->swapChain->swapChain;
 		swapChainImages = renderer->swapChain->swapChainImages;
 		swapChainImageFormat = renderer->swapChain->surfaceFormat.format;
 		swapChainExtent = renderer->swapChain->extent;
+		swapChainImageViews = renderer->swapChain->swapChainImageViews;
 
-
-		createImageViews();
+		//createImageViews();
 		createRenderPass();
 		createGraphicsPipeline();
 		createFramebuffers();

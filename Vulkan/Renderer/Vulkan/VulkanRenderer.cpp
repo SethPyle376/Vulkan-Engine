@@ -7,4 +7,5 @@ VulkanRenderer::VulkanRenderer(VkInstance* instance, GLFWwindow *window)
 	device->setSurface(swapChain->getSurface());
 	device->createLogicalDevice();
 	swapChain->createSwapchain();
+	swapChain->createImageViews();
 }
