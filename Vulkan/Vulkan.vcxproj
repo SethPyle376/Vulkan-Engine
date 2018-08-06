@@ -144,6 +144,7 @@
     <ClInclude Include="Renderer\Vulkan\VulkanInits.h" />
     <ClInclude Include="Renderer\Vulkan\VulkanRenderer.h" />
     <ClInclude Include="Renderer\Vulkan\VulkanSwapchain.h" />
+    <ClInclude Include="Renderer\Vulkan\VulkanUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

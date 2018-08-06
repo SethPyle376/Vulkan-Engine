@@ -50,7 +50,7 @@ void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT
 	}
 }
 
-static std::vector<char> readFile(const std::string& filename)
+/*static std::vector<char> readFile(const std::string& filename)
 {
 	std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
@@ -65,9 +65,9 @@ static std::vector<char> readFile(const std::string& filename)
 	file.seekg(0);
 	file.read(buffer.data(), fileSize);
 	file.close();
-
+	
 	return buffer;
-}
+}*/
 
 class Renderer
 {
@@ -169,9 +169,9 @@ private:
 		swapChainExtent = renderer->swapChain->extent;
 		swapChainImageViews = renderer->swapChain->swapChainImageViews;
 
-		//createImageViews();
-		createRenderPass();
-		createGraphicsPipeline();
+		renderPass = renderer->renderPass;
+		graphicsPipeline = renderer->graphicsPipeline;
+
 		createFramebuffers();
 		createCommandPool();
 		createCommandBuffers();
@@ -393,8 +393,8 @@ private:
 		VkShaderModule vertShaderModule;
 		VkShaderModule fragShaderModule;
 
-		vertShaderModule = createShaderModule(vertShaderCode);
-		fragShaderModule = createShaderModule(fragShaderCode);
+		vertShaderModule = createShaderModule(&device, vertShaderCode);
+		fragShaderModule = createShaderModule(&device, fragShaderCode);
 
 		VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -530,7 +530,7 @@ private:
 		vkDestroyShaderModule(device, vertShaderModule, nullptr);
 	}
 
-	VkShaderModule createShaderModule(const std::vector<char>& code)
+	/*VkShaderModule createShaderModule(const std::vector<char>& code)
 	{
 		VkShaderModuleCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -544,7 +544,7 @@ private:
 		}
 
 		return shaderModule;
-	}
+	}*/
 
 
 	void createImageViews()

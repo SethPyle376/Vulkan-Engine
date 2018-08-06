@@ -44,5 +44,8 @@
     <ClInclude Include="Renderer\Vulkan\VulkanRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer\Vulkan\VulkanUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
