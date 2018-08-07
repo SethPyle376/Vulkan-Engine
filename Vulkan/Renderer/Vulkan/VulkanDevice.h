@@ -26,6 +26,7 @@ class VulkanDevice
 {
 private:
 	friend class VulkanSwapchain;
+	friend class VulkanRenderer;
 	void pickPhysicalDevice();
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
 	bool isDeviceSuitable(VkPhysicalDevice device);
