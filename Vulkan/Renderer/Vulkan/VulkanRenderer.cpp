@@ -201,4 +201,33 @@ VulkanRenderer::VulkanRenderer(VkInstance* instance, GLFWwindow *window)
 	swapChain->createImageViews();
 	createRenderPass();
 	createGraphicsPipeline("res/shaders/vert.spv", "res/shaders/frag.spv");
+	createFramebuffers();
+}
+
+void VulkanRenderer::createFramebuffers()
+{
+	swapchainFramebuffers.resize(swapChain->swapChainImageViews.size());
+
+	for (size_t i = 0; i < swapChain->swapChainImageViews.size(); i++)
+	{
+		VkImageView attachments[] = { swapChain->swapChainImageViews[i] };
+
+		VkFramebufferCreateInfo framebufferInfo = {};
+		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferInfo.renderPass = renderPass;
+		framebufferInfo.attachmentCount = 1;
+		framebufferInfo.pAttachments = attachments;
+		framebufferInfo.width = swapChain->extent.width;
+		framebufferInfo.height = swapChain->extent.height;
+		framebufferInfo.layers = 1;
+
+		if (vkCreateFramebuffer(*(device->getLogicalDevice()), &framebufferInfo, nullptr, &swapchainFramebuffers[i]) != VK_SUCCESS)
+		{
+			throw std::runtime_error("ERROR: FAILED TO CREATE FRAMEBUFFER");
+		}
+		else
+		{
+			std::cout << "SUCCESSFULLY CREATED FRAMEBUFFER " << i << std::endl;
+		}
+	}
 }

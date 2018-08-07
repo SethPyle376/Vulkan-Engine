@@ -50,25 +50,6 @@ void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT
 	}
 }
 
-/*static std::vector<char> readFile(const std::string& filename)
-{
-	std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
-	if (!file.is_open())
-	{
-		throw std::runtime_error("FAILED TO OPEN BINARY FILE");
-	}
-
-	size_t fileSize = (size_t)file.tellg();
-	std::vector<char> buffer(fileSize);
-
-	file.seekg(0);
-	file.read(buffer.data(), fileSize);
-	file.close();
-	
-	return buffer;
-}*/
-
 class Renderer
 {
 public:
@@ -172,7 +153,8 @@ private:
 		renderPass = renderer->renderPass;
 		graphicsPipeline = renderer->graphicsPipeline;
 
-		createFramebuffers();
+		swapChainFramebuffers = renderer->swapchainFramebuffers;
+
 		createCommandPool();
 		createCommandBuffers();
 		createSemaphores();
@@ -307,32 +289,6 @@ private:
 		{
 			throw std::runtime_error("ERROR: FAILED TO CREATE COMMAND POOL");
 		}
-	}
-
-	void createFramebuffers()
-	{
-		swapChainFramebuffers.resize(swapChainImageViews.size());
-
-		for (size_t i = 0; i < swapChainImageViews.size(); i++)
-		{
-			VkImageView attachments[] = { swapChainImageViews[i] };
-
-
-			VkFramebufferCreateInfo framebufferInfo = {};
-			framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-			framebufferInfo.renderPass = renderPass;
-			framebufferInfo.attachmentCount = 1;
-			framebufferInfo.pAttachments = attachments;
-			framebufferInfo.width = swapChainExtent.width;
-			framebufferInfo.height = swapChainExtent.height;
-			framebufferInfo.layers = 1;
-
-			if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
-			{
-				throw std::runtime_error("ERROR: FAILED TO CREATE FRAMEBUFFER");
-			}
-		}
-
 	}
 
 	void createRenderPass()
