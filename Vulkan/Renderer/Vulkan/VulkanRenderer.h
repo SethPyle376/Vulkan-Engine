@@ -19,6 +19,9 @@ public:
 	std::vector<VkFramebuffer> swapchainFramebuffers;
 	std::vector<VkCommandBuffer> commandBuffers;
 
+	VkSemaphore imageAvailableSemaphore;
+	VkSemaphore renderFinishedSemaphore;
+
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	VkRenderPass renderPass;
@@ -29,6 +32,9 @@ public:
 	void createFramebuffers();
 	void createCommandPool();
 	void createCommandBuffers();
+	void createSemaphores();
+
+	void drawFrame();
 
 	VulkanRenderer(VkInstance *instance, GLFWwindow *window);
 };

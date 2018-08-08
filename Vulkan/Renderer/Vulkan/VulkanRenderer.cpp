@@ -204,6 +204,7 @@ VulkanRenderer::VulkanRenderer(VkInstance* instance, GLFWwindow *window)
 	createFramebuffers();
 	createCommandPool();
 	createCommandBuffers();
+	createSemaphores();
 }
 
 void VulkanRenderer::createFramebuffers()
@@ -307,4 +308,58 @@ void VulkanRenderer::createCommandBuffers()
 			throw std::runtime_error("FAILED TO RECORD COMMAND BUFFER");
 		}
 	}
+}
+
+void VulkanRenderer::createSemaphores()
+{
+	VkSemaphoreCreateInfo semaphoreInfo = {};
+	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+	if (vkCreateSemaphore(device->device, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS || vkCreateSemaphore(device->device, &semaphoreInfo, nullptr, &renderFinishedSemaphore))
+	{
+		throw std::runtime_error("ERROR: FAILED TO CREATE SEMAPHORES");
+	}
+	else
+	{
+		std::cout << "CREATED SEMAPHORES" << std::endl;
+	}
+}
+
+void VulkanRenderer::drawFrame()
+{
+	uint32_t imageIndex;
+	vkAcquireNextImageKHR(device->device, swapChain->swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+	VkSubmitInfo submitInfo = {};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
+	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.pWaitSemaphores = waitSemaphores;
+	submitInfo.pWaitDstStageMask = waitStages;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
+
+	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pSignalSemaphores = signalSemaphores;
+
+	if (vkQueueSubmit(device->graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
+	{
+		throw std::runtime_error("ERROR: FAILED TO SUBMIT DRAW COMMAND BUFFER");
+	}
+
+	VkPresentInfoKHR presentInfo = {};
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	presentInfo.waitSemaphoreCount = 1;
+	presentInfo.pWaitSemaphores = signalSemaphores;
+
+	VkSwapchainKHR swapChains[] = { swapChain->swapChain };
+	presentInfo.swapchainCount = 1;
+	presentInfo.pSwapchains = swapChains;
+	presentInfo.pImageIndices = &imageIndex;
+	presentInfo.pResults = nullptr;
+
+	vkQueuePresentKHR(device->presentQueue, &presentInfo);
 }
