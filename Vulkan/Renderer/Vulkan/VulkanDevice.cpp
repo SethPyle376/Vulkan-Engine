@@ -5,7 +5,7 @@ void VulkanDevice::setSurface(VkSurfaceKHR surface)
 	this->surface = surface;
 }
 
-VkInstance * VulkanDevice::getInstance()
+VkInstance VulkanDevice::getInstance()
 {
 	return instance;
 }
@@ -35,7 +35,7 @@ VkSurfaceKHR VulkanDevice::getSurface()
 	return surface;
 }
 
-VulkanDevice::VulkanDevice(VkInstance *instance, GLFWwindow *window)
+VulkanDevice::VulkanDevice(VkInstance instance, GLFWwindow *window)
 {
 	std::cout << "CREATING VULKAN DEVICE" << std::endl;
 	this->instance = instance;
@@ -71,7 +71,7 @@ bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)
 void VulkanDevice::pickPhysicalDevice()
 {
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(*instance, &deviceCount, nullptr);
+	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
 	if (deviceCount == 0)
 	{
@@ -79,7 +79,7 @@ void VulkanDevice::pickPhysicalDevice()
 	}
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(*instance, &deviceCount, devices.data());
+	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
 	for (const auto& device : devices)
 	{

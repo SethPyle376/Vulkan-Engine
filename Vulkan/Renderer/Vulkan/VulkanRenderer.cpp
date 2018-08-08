@@ -1,5 +1,21 @@
 #include "VulkanRenderer.h"
 
+
+std::vector<const char*> getRequiredExtensions()
+{
+	uint32_t glfwExtensionCount = 0;
+	const char** glfwExtensions;
+	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+	std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+	if (enableValidationLayers)
+	{
+		extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+	}
+	return extensions;
+}
+
 void VulkanRenderer::createRenderPass()
 {
 	VkAttachmentDescription colorAttachment = {};
@@ -191,9 +207,10 @@ void VulkanRenderer::createGraphicsPipeline(const std::string & vertex, const st
 	vkDestroyShaderModule(*(device->getLogicalDevice()), vertShaderModule, nullptr);
 }
 
-VulkanRenderer::VulkanRenderer(VkInstance* instance, GLFWwindow *window)
+VulkanRenderer::VulkanRenderer(GLFWwindow *window)
 {
-	this->instance = instance;
+	createInstance();
+	setupDebugCallback();
 	device = new VulkanDevice(instance, window);
 	swapChain = new VulkanSwapchain(device);
 	device->setSurface(swapChain->getSurface());
@@ -234,8 +251,8 @@ VulkanRenderer::~VulkanRenderer()
 	vkDestroyDevice(device->device, nullptr);
 	std::cout << "VULKAN LOGICAL DEVICE DESTROYED" << std::endl;
 
-	vkDestroySurfaceKHR(*instance, (swapChain->getSurface()), nullptr);
-	vkDestroyInstance(*instance, nullptr);
+	vkDestroySurfaceKHR(instance, (swapChain->getSurface()), nullptr);
+	vkDestroyInstance(instance, nullptr);
 }
 
 void VulkanRenderer::createFramebuffers()
@@ -394,3 +411,51 @@ void VulkanRenderer::drawFrame()
 
 	vkQueuePresentKHR(device->presentQueue, &presentInfo);
 }
+
+void VulkanRenderer::createInstance()
+{
+	if (enableValidationLayers && !checkValidationLayerSupport())
+	{
+		throw std::runtime_error("VALIDATION REQUESTED BUT NOT AVAILABLE");
+	}
+
+	VkApplicationInfo appInfo = getApplicationInfo("Peacemaker", "Peacemaker");
+
+	VkInstanceCreateInfo createInfo = getInstanceCreateInfo(&appInfo);
+	//TODO: Consolidate instances into getInstanceCreateInfo eventually.
+	auto extensions = getRequiredExtensions();
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+	createInfo.ppEnabledExtensionNames = extensions.data();
+
+	if (enableValidationLayers)
+	{
+		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+		createInfo.ppEnabledLayerNames = validationLayers.data();
+	}
+	else
+	{
+		createInfo.enabledLayerCount = 0;
+	}
+
+	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
+	{
+		throw std::runtime_error("FAILED TO CREATE VULKAN INSTANCE");
+	}
+}
+
+void VulkanRenderer::setupDebugCallback()
+{
+	if (!enableValidationLayers) return;
+
+	VkDebugReportCallbackCreateInfoEXT createInfo = {};
+	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+	createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+	createInfo.pfnCallback = debugCallback;
+
+	if (CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback) != VK_SUCCESS)
+	{
+		throw std::runtime_error("ERROR: FAILED TO SET UP DEBUG CALLBACK");
+	}
+}
+
+

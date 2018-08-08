@@ -5,7 +5,7 @@
 void VulkanSwapchain::initSurface()
 {
 	std::cout << "CREATING WINDOW SURFACE" << std::endl;
-	if (glfwCreateWindowSurface(*(vulkanDevice->instance), vulkanDevice->window, nullptr, &surface) != VK_SUCCESS)
+	if (glfwCreateWindowSurface(vulkanDevice->instance, vulkanDevice->window, nullptr, &surface) != VK_SUCCESS)
 	{
 		throw std::runtime_error("FAILED TO CREATE SURFACE");
 	}

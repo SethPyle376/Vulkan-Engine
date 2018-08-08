@@ -1,8 +1,10 @@
+#pragma once
+
 #include <vulkan\vulkan.h>
 
 #include <string>
 
-VkApplicationInfo getApplicationInfo(std::string appName, std::string engineName)
+static VkApplicationInfo getApplicationInfo(std::string appName, std::string engineName)
 {
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -14,7 +16,7 @@ VkApplicationInfo getApplicationInfo(std::string appName, std::string engineName
 	return appInfo;
 }
 
-VkInstanceCreateInfo getInstanceCreateInfo(VkApplicationInfo *appInfo)
+static VkInstanceCreateInfo getInstanceCreateInfo(VkApplicationInfo *appInfo)
 {
 	VkInstanceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
