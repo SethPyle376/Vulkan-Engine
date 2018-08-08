@@ -40,20 +40,20 @@ private:
 	VkDevice device;
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
-	VkSurfaceKHR *surface;
+	VkSurfaceKHR surface;
 
 	
 public:
 	void createLogicalDevice();
 
-	void setSurface(VkSurfaceKHR *surface);
+	void setSurface(VkSurfaceKHR surface);
 
 	VkInstance * getInstance();
 	VkPhysicalDevice * getPhysicalDevice();
 	VkDevice * getLogicalDevice();
 	VkQueue getGraphicsQueue();
 	VkQueue getPresentQueue();
-	VkSurfaceKHR * getSurface();
+	VkSurfaceKHR getSurface();
 
 	VulkanDevice(VkInstance *instance, GLFWwindow *window);
 

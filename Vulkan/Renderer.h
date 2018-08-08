@@ -59,7 +59,7 @@ public:
 		initWindow();
 		initVulkan();
 		mainLoop();
-		//cleanup();
+		cleanup();
 	}
 
 private:
@@ -310,37 +310,7 @@ private:
 
 	void cleanup()
 	{
-		vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
-		vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
-
-		vkDestroyCommandPool(device, commandPool, nullptr);
-
-		for (auto framebuffer : swapChainFramebuffers)
-		{
-			vkDestroyFramebuffer(device, framebuffer, nullptr);
-		}
-
-		vkDestroyPipeline(device, graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-		vkDestroyRenderPass(device, renderPass, nullptr);
-
-		for (auto imageView : swapChainImageViews)
-		{
-			vkDestroyImageView(device, imageView, nullptr);
-		}
-
-		vkDestroySwapchainKHR(device, swapChain, nullptr);
-		vkDestroyDevice(device, nullptr);
-
-		if (enableValidationLayers)
-		{
-			DestroyDebugReportCallbackEXT(instance, callback, nullptr);
-		}
-
-		vkDestroySurfaceKHR(instance, surface, nullptr);
-
-
-		vkDestroyInstance(instance, nullptr);
+		delete renderer;
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}

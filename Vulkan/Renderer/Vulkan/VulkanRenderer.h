@@ -37,4 +37,5 @@ public:
 	void drawFrame();
 
 	VulkanRenderer(VkInstance *instance, GLFWwindow *window);
+	~VulkanRenderer();
 };

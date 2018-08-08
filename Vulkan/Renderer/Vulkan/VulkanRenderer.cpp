@@ -193,6 +193,7 @@ void VulkanRenderer::createGraphicsPipeline(const std::string & vertex, const st
 
 VulkanRenderer::VulkanRenderer(VkInstance* instance, GLFWwindow *window)
 {
+	this->instance = instance;
 	device = new VulkanDevice(instance, window);
 	swapChain = new VulkanSwapchain(device);
 	device->setSurface(swapChain->getSurface());
@@ -205,6 +206,36 @@ VulkanRenderer::VulkanRenderer(VkInstance* instance, GLFWwindow *window)
 	createCommandPool();
 	createCommandBuffers();
 	createSemaphores();
+}
+
+VulkanRenderer::~VulkanRenderer()
+{
+	std::cout << "DESTROYING VULKAN" << std::endl;
+	vkDestroySemaphore(device->device, renderFinishedSemaphore, nullptr);
+	vkDestroySemaphore(device->device, imageAvailableSemaphore, nullptr);
+
+	vkDestroyCommandPool(device->device, commandPool, nullptr);
+
+	for (auto framebuffer : swapchainFramebuffers)
+	{
+		vkDestroyFramebuffer(device->device, framebuffer, nullptr);
+	}
+
+	vkDestroyPipeline(device->device, graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(device->device, pipelineLayout, nullptr);
+	vkDestroyRenderPass(device->device, renderPass, nullptr);
+
+	for (auto imageView : swapChain->swapChainImageViews)
+	{
+		vkDestroyImageView(device->device, imageView, nullptr);
+	}
+
+	vkDestroySwapchainKHR(device->device, swapChain->swapChain, nullptr);
+	vkDestroyDevice(device->device, nullptr);
+	std::cout << "VULKAN LOGICAL DEVICE DESTROYED" << std::endl;
+
+	vkDestroySurfaceKHR(*instance, (swapChain->getSurface()), nullptr);
+	vkDestroyInstance(*instance, nullptr);
 }
 
 void VulkanRenderer::createFramebuffers()

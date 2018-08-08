@@ -95,9 +95,9 @@ VulkanSwapchain::~VulkanSwapchain()
 	}
 }
 
-VkSurfaceKHR * VulkanSwapchain::getSurface()
+VkSurfaceKHR VulkanSwapchain::getSurface()
 {
-	return &surface;
+	return surface;
 }
 
 SwapChainSupportDetails VulkanSwapchain::querySwapChainSupport()

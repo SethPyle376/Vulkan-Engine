@@ -1,6 +1,6 @@
 #include "VulkanDevice.h"
 
-void VulkanDevice::setSurface(VkSurfaceKHR * surface)
+void VulkanDevice::setSurface(VkSurfaceKHR surface)
 {
 	this->surface = surface;
 }
@@ -30,7 +30,7 @@ VkQueue VulkanDevice::getPresentQueue()
 	return presentQueue;
 }
 
-VkSurfaceKHR * VulkanDevice::getSurface()
+VkSurfaceKHR VulkanDevice::getSurface()
 {
 	return surface;
 }
@@ -113,7 +113,7 @@ QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice physicalDevi
 		}
 
 		VkBool32 presentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, *surface, &presentSupport);
+		vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
 
 		if (queueFamily.queueCount > 0 && presentSupport)
 		{

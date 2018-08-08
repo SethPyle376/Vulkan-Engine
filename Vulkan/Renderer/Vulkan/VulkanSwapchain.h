@@ -43,7 +43,7 @@ public:
 	VulkanSwapchain(VulkanDevice *vulkanDevice);
 	~VulkanSwapchain();
 	
-	VkSurfaceKHR * getSurface();
+	VkSurfaceKHR getSurface();
 
 	VkSwapchainKHR swapChain;
 	std::vector<VkImage> swapChainImages;
