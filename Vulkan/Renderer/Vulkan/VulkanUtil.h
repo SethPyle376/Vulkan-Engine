@@ -1,7 +1,10 @@
-#pragma once
+
 #include <string>
 #include <vector>
 #include <fstream>
+
+#include "VulkanRenderer.h"
+
 
 const std::vector<const char*> validationLayers = { "VK_LAYER_LUNARG_standard_validation" };
 
@@ -96,3 +99,6 @@ static VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugR
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
 }
+
+
+

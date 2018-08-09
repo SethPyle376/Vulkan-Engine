@@ -24,7 +24,6 @@ public:
 
 	void run()
 	{
-		initWindow();
 		initVulkan();
 		mainLoop();
 		cleanup();
@@ -36,23 +35,16 @@ private:
 	VkInstance instance;
 	VkSurfaceKHR surface;
 
-	void initWindow()
-	{
-		glfwInit();
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-		window = glfwCreateWindow(WIDTH, HEIGHT, "VULKAN", nullptr, nullptr);
-	}
 
 	void initVulkan()
 	{
-		renderer = new VulkanRenderer(window);
+		renderer = new VulkanRenderer();
 	}
 
 	void mainLoop()
 	{
 		//Keep loop running until kill signal is sent to glfw
-		while (!glfwWindowShouldClose(window))
+		while (!glfwWindowShouldClose(renderer->window))
 		{
 			glfwPollEvents();
 			renderer->drawFrame();

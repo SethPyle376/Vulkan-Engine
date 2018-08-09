@@ -13,20 +13,29 @@ const bool enableValidationLayers = false;
 const bool enableValidationLayers = true;
 #endif
 
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
+
 
 class VulkanRenderer
 {
 private:
-	VkDebugReportCallbackEXT callback;
-	
-
-public:
+	friend class Renderer;
 	VulkanDevice * device;
 	VulkanSwapchain * swapChain;
 	VkInstance instance;
 
+	GLFWwindow *window;
+
+	VkDebugReportCallbackEXT callback;
+
 	std::vector<VkFramebuffer> swapchainFramebuffers;
 	std::vector<VkCommandBuffer> commandBuffers;
+
+	std::vector<VkSemaphore> imageAvailableSemaphores;
+	std::vector<VkSemaphore> renderFinishedSemaphores;
+	std::vector<VkFence> inFlightFences;
+	size_t currentFrame = 0;
 
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
@@ -36,6 +45,7 @@ public:
 	VkRenderPass renderPass;
 	VkCommandPool commandPool;
 
+	void initWindow();
 	void setupDebugCallback();
 	void createRenderPass();
 	void createGraphicsPipeline(const std::string& vertex, const std::string& fragment);
@@ -45,8 +55,21 @@ public:
 	void createSemaphores();
 	void createInstance();
 
-	void drawFrame();
+	void recreateSwapchain();
 
-	VulkanRenderer(GLFWwindow *window);
+	void cleanupSwapchain();
+
+	static void framebufferResizeCallback(GLFWwindow* window, int width, int height)
+	{
+		auto renderer = reinterpret_cast<VulkanRenderer*>(glfwGetWindowUserPointer(window));
+		renderer->framebufferResize = true;
+	}
+
+public:
+	VulkanRenderer();
 	~VulkanRenderer();
+
+	bool framebufferResize = false;
+
+	void drawFrame();
 };

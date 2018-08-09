@@ -26,9 +26,9 @@ private:
 	VulkanDevice * vulkanDevice;
 	VkSurfaceKHR surface;
 
-
-
 	SwapChainSupportDetails querySwapChainSupport();
+
+	GLFWwindow *window;
 
 	void initSurface();
 	bool swapChainAdequate();
@@ -39,8 +39,10 @@ private:
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
+	void cleanup();
+
 public:
-	VulkanSwapchain(VulkanDevice *vulkanDevice);
+	VulkanSwapchain(VulkanDevice *vulkanDevice, GLFWwindow *window);
 	~VulkanSwapchain();
 	
 	VkSurfaceKHR getSurface();

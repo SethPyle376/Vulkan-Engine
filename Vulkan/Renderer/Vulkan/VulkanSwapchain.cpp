@@ -5,11 +5,15 @@
 void VulkanSwapchain::initSurface()
 {
 	std::cout << "CREATING WINDOW SURFACE" << std::endl;
-	if (glfwCreateWindowSurface(vulkanDevice->instance, vulkanDevice->window, nullptr, &surface) != VK_SUCCESS)
+
+	if (glfwCreateWindowSurface(vulkanDevice->instance, window, nullptr, &surface) != VK_SUCCESS)
 	{
 		throw std::runtime_error("FAILED TO CREATE SURFACE");
 	}
-	std::cout << "WINDOW SURFACE CREATED" << std::endl;
+	else
+	{
+		std::cout << "WINDOW SURFACE CREATED" << std::endl;
+	}
 }
 
 bool VulkanSwapchain::swapChainAdequate()
@@ -64,16 +68,20 @@ VkExtent2D VulkanSwapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR & ca
 	}
 	else
 	{
-		VkExtent2D actualExtent = { WIDTH, HEIGHT };
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
 
-		actualExtent.width = (std::max)(capabilities.minImageExtent.width, (std::min)(capabilities.maxImageExtent.width, actualExtent.width));
-		actualExtent.height = (std::max)(capabilities.minImageExtent.height, (std::min)(capabilities.maxImageExtent.height, actualExtent.height));
+		VkExtent2D actualExtent = {
+			static_cast<uint32_t>(width),
+			static_cast<uint32_t>(height)
+		};
 		return actualExtent;
 	}
 }
 
-VulkanSwapchain::VulkanSwapchain(VulkanDevice * device)
+VulkanSwapchain::VulkanSwapchain(VulkanDevice * device, GLFWwindow *window)
 {
+	this->window = window;
 	vulkanDevice = device;
 	initSurface();
 
@@ -171,6 +179,8 @@ void VulkanSwapchain::createSwapchain()
 	createInfo.clipped = VK_TRUE;
 
 	std::cout << "CREATING SWAPCHAIN" << std::endl;
+
+
 	if (vkCreateSwapchainKHR(vulkanDevice->device, &createInfo, nullptr, &swapChain) != VK_SUCCESS)
 	{
 		throw std::runtime_error("FAILED TO CREATE SWAPCHAIN");
@@ -213,5 +223,14 @@ void VulkanSwapchain::createImageViews()
 			std::cout << "IMAGE VIEW: " << i << " CREATED SUCCESSFULLY" << std::endl;
 		}
 	}
+}
+
+void VulkanSwapchain::cleanup()
+{
+	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
+		vkDestroyImageView(vulkanDevice->device, swapChainImageViews[i], nullptr);
+	}
+
+	vkDestroySwapchainKHR(vulkanDevice->device, swapChain, nullptr);
 }
 
