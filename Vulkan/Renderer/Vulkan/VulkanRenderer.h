@@ -2,8 +2,10 @@
 
 #include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
+#include "VulkanBuffer.h"
 #include "VulkanUtil.h"
 #include "VulkanInits.h"
+#include "Model.h"
 
 #include <glfw3.h>
 
@@ -24,6 +26,7 @@ private:
 	VulkanDevice * device;
 	VulkanSwapchain * swapChain;
 	VkInstance instance;
+	Model *model;
 
 	GLFWwindow *window;
 

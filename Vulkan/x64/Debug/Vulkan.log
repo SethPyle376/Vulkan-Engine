@@ -1,3 +1,2 @@
 ﻿  VulkanRenderer.cpp
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  Vulkan.vcxproj -> A:\Users\sethp\Desktop\Vulkan\Vulkan\x64\Debug\Vulkan.exe
+  Vulkan.vcxproj -> A:\Users\sethp\Desktop\Projects\Vulkan\Vulkan\x64\Debug\Vulkan.exe

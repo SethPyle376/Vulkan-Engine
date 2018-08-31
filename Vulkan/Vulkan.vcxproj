@@ -134,14 +134,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Renderer\Vulkan\VulkanBuffer.cpp" />
     <ClCompile Include="Renderer\Vulkan\VulkanDevice.cpp" />
     <ClCompile Include="Renderer\Vulkan\VulkanRenderer.cpp" />
     <ClCompile Include="Renderer\Vulkan\VulkanSwapchain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Renderer\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="Renderer\Vulkan\VulkanDevice.h" />
     <ClInclude Include="Renderer\Vulkan\VulkanInits.h" />
+    <ClInclude Include="Renderer\Vulkan\Model.h" />
     <ClInclude Include="Renderer\Vulkan\VulkanRenderer.h" />
     <ClInclude Include="Renderer\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="Renderer\Vulkan\VulkanUtil.h" />
